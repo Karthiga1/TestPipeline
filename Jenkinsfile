@@ -3,9 +3,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'Printing Pipeline'
+        echo 'Building Pipeline'
       }
     }
-
+    stage('Deploy') {
+      steps {
+         echo 'Deploying'
+       }
+     }								
   }
 }
