@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Launch AWS instances
+
+Parameters: 
+  myKey:
+    Type: AWS::EC2::KeyPair::KeyName
+    
+Resources:
+  EC2Instance1:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: "ami-062f7200baf2fa504"
+      InstanceType: "t2.micro"
+      KeyName: 
+        Ref: myKey   
+      SecurityGroups:
+        - Ref: WebServerSecurityGroup
+      
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup  
+    Properties:
+      GroupDescription: "Enable HTTP access via port 80 "
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: '80'
+        IpProtocol: tcp
+        ToPort: '80'
+  MyUser:
+    Type: AWS::IAM::User
+    Properties:
+      Policies:
+      - PolicyName: giveadminaccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - "*"
+            Resource:
+            - "*"
+Outputs:
+  PublicIP:
+    Description : "EC2 public" 
+    Value: !GetAtt EC2Instance1.PublicIp
+
+    
