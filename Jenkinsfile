@@ -1,14 +1,14 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
+    stage('Static Code Validation') {
       steps {
-        echo 'Building Pipeline'
+        echo 'Static Code Validation'
       }
     }
-    stage('Deploy') {
+    stage('Lint Validation') {
       steps {
-         echo 'Deploying'
+         echo 'Lint Validation'
        }
      }								
   }
