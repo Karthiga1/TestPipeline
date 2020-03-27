@@ -92,15 +92,15 @@ pipeline {
              sh "/usr/local/bin/aws cloudformation create-stack \
                 --stack-name ${params.STACK_NAME} \
                 --template-url ${params.TEMPLATE_FILE_PATH} \
-                ${params.EXTRA_ARGS}"
+                ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM"
   
              // Wait until Stack is created completely
              sh "/usr/local/bin/aws cloudformation wait stack-create-complete \
-                --stack-name ${params.STACK_NAME}" 
+                --stack-name ${params.STACK_NAME} --capabilities CAPABILITY_NAMED_IAM" 
   
              // Print CloudFormation create command resutls
              sh "/usr/local/bin/aws cloudformation describe-stacks \
-                --stack-name ${params.STACK_NAME}"
+                --stack-name ${params.STACK_NAME} --capabilities CAPABILITY_NAMED_IAM"
           }
         }
       }
