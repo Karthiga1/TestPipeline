@@ -90,7 +90,7 @@ pipeline {
           dir ("${params.WORKING_DIR}") {
              // Create Stack
              sh "/usr/local/bin/aws cloudformation create-stack \
-                --stackname ${params.STACK_NAME} \
+                --stack-name ${params.STACK_NAME} \
                 --template-body ${params.TEMPLATE_FILE_PATH} \
                 ${params.EXTRA_ARGS}"
   
