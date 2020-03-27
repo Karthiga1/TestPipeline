@@ -10,7 +10,7 @@ Resources:
   EC2Instance1:
     Type: "AWS::EC2::Instance"
     Properties:
-      ImageId: "ami-062f7200baf2fa504"
+      ImageId: "ami-0cbc6aae997c6538a"
       InstanceType: "t2.micro"
       KeyName: 
         Ref: myKey   
