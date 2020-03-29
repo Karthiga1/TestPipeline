@@ -85,17 +85,20 @@ pipeline {
     }
     stage('Check if stack is existing') {
       steps {
-         withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
+        withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
           dir ("${params.WORKING_DIR}") {
             // Check if Stack is existing
             script{
             def Stacks = sh "aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --output text|grep myteststack"
+            echo "${Stacks}"
+            echo "0"
             if(Stacks.isEmpty()){
               def setStack = 'true'
+              echo "1"
 
             }else{
               println("Stack already existing"); 
-
+              echo "2"
             }
             }
           }
