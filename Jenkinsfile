@@ -91,7 +91,7 @@ pipeline {
              // Create Stack
              sh "aws cloudformation deploy \
                 --stack-name ${params.STACK_NAME} \
-                --template ${params.TEMPLATE_FILE_PATH} \
+                --template-url ${params.TEMPLATE_FILE_PATH} \
                 ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM"
   
              // Wait until Stack is created completely
