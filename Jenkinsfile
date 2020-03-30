@@ -89,9 +89,13 @@ pipeline {
         withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
           dir ("${params.WORKING_DIR}") {
              // Create Stack
-             sh "aws cloudformation create-stack --stack-name ${params.STACK_NAME} --template-url ${params.TEMPLATE_FILE_PATH} \
-		  ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM \
-				if [[ $? -eq 0 ]]; then \
+             sh "aws cloudformation create-stack \
+                --stack-name ${params.STACK_NAME} \
+                --template-url ${params.TEMPLATE_FILE_PATH} \
+                ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM" 
+		  
+		  
+				sh"if [[ $? -eq 0 ]]; then \
 				# Wait for create-stack to finish \
 				echo  "Waiting for create-stack command to complete" \
 				CREATE_STACK_STATUS=$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text) \
