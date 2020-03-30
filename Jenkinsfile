@@ -6,6 +6,11 @@ pipeline {
 
   parameters {
     string(
+      name: 'AWS_CREDENTIALS_ID',
+      defaultValue: '',
+      description: 'AWS credentials id, stored in Jenkins credentials'
+    )
+    string(
       name: 'EXTRA_ARGS',
       defaultValue: '',
       description: 'aws cloudformation create-stack command extra arguments'
