@@ -95,15 +95,14 @@ pipeline {
                 ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM" 
 		  
 		  
-				sh "if [[ '$?' -eq 0 ]]; then \
-				CREATE_STACK_STATUS=$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text) \
-				while [[ $CREATE_STACK_STATUS == "REVIEW_IN_PROGRESS" ]] || [[ $CREATE_STACK_STATUS == "CREATE_IN_PROGRESS" ]] \
+		  script{ "if( [[ "$?" -eq 0 ]]){
+				CREATE_STACK_STATUS="$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text)" \
+				while [[ "$CREATE_STACK_STATUS" == "REVIEW_IN_PROGRESS" ]] || [[ "$CREATE_STACK_STATUS" == "CREATE_IN_PROGRESS" ]] \
 				do \
-				# Wait 30 seconds and then check stack status again \
 				sleep 30 \
-				CREATE_STACK_STATUS=$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text) \
-				done \
-				fi"
+				CREATE_STACK_STATUS="$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text)" \
+			 	done }
+			 }
           }
         }
       }
