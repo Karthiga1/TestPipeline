@@ -83,40 +83,16 @@ pipeline {
         )
       }
     }
-    stage('Check if stack is existing') {
-      steps {
-        withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
-          dir ("${params.WORKING_DIR}") {
-            // Check if Stack is existing
-            script{
-            def Stacks = sh "aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --output text|grep myteststack"
-            echo "${Stacks}"
-            echo "0"
-            if(Stacks.isEmpty()){
-              def setStack = 'true'
-              echo "1"
-
-            }else{
-              println("Stack already existing"); 
-              echo "2"
-            }
-            }
-          }
-      }
-     }
-    }
+    
     stage('Create Stack') {
-      when {
-                expression {setStack == 'true'}
-            }
       steps {
         withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
           dir ("${params.WORKING_DIR}") {
              // Create Stack
-             sh "aws cloudformation create-stack \
-                --stackname ${params.STACK_NAME} \
-                --template-url ${params.TEMPLATE_FILE_PATH} \
-                ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM"
+             sh "aws cloudformation deploy \
+                --stack-name ${params.STACK_NAME} \
+                --template-file ${params.TEMPLATE_FILE_PATH} \
+                ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --debug"
   
              // Wait until Stack is created completely
              sh "aws cloudformation wait stack-create-complete \
@@ -129,23 +105,6 @@ pipeline {
         }
       }
     }
-    stage('Update Stack') {
-      when {
-                expression {setStack != 'true'}
-            }
-      steps {
-        withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
-          dir ("${params.WORKING_DIR}") {
-             // Update Stack
-             sh "aws cloudformation update-stack \
-                --stackname ${params.STACK_NAME} \
-                --template-url ${params.TEMPLATE_FILE_PATH} \
-                ${params.EXTRA_ARGS}"
-  
-             
-          }
-        }
-      }
-    }
+    
   }
 }
