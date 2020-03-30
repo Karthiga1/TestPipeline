@@ -83,59 +83,24 @@ pipeline {
         )
       }
     }
-    stage('Check if stack is existing') {
-      steps {
-        withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
-          dir ("${params.WORKING_DIR}") {
-            // Check if Stack is existing
-            script{
-            echo "-1"  
-            sh "aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --output text|grep myteststack"
-            echo "0"
-            
-            }
-          }
-      }
-     }
-    }
+
     stage('Create Stack') {
-      when {
-                expression {setStack == 'true'}
-            }
       steps {
         withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
           dir ("${params.WORKING_DIR}") {
              // Create Stack
-             sh "aws cloudformation create-stack \
-                --stackname ${params.STACK_NAME} \
+             sh "/usr/local/bin/aws cloudformation create-stack \
+                --stack-name ${params.STACK_NAME} \
                 --template-url ${params.TEMPLATE_FILE_PATH} \
                 ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM"
   
              // Wait until Stack is created completely
-             sh "aws cloudformation wait stack-create-complete \
+             sh "/usr/local/bin/aws cloudformation wait stack-create-complete \
                 --stack-name ${params.STACK_NAME}" 
   
              // Print CloudFormation create command resutls
-             sh "aws cloudformation describe-stacks \
+             sh "/usr/local/bin/aws cloudformation describe-stacks \
                 --stack-name ${params.STACK_NAME}"
-          }
-        }
-      }
-    }
-    stage('Update Stack') {
-      when {
-                expression {setStack != 'true'}
-            }
-      steps {
-        withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
-          dir ("${params.WORKING_DIR}") {
-             // Update Stack
-             sh "aws cloudformation update-stack \
-                --stackname ${params.STACK_NAME} \
-                --template-url ${params.TEMPLATE_FILE_PATH} \
-                ${params.EXTRA_ARGS}"
-  
-             
           }
         }
       }
