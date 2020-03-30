@@ -89,18 +89,18 @@ pipeline {
         withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
           dir ("${params.WORKING_DIR}") {
              // Create Stack
-             sh "aws cloudformation create-stack \
-                --stack-name ${params.STACK_NAME} \
-                --template-url ${params.TEMPLATE_FILE_PATH} \
-                ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM"
-  
-             // Wait until Stack is created completely
-             sh "aws cloudformation wait stack-create-complete \
-                --stack-name ${params.STACK_NAME}" 
-  
-             // Print CloudFormation create command resutls
-             sh "aws cloudformation describe-stacks \
-                --stack-name ${params.STACK_NAME}"
+             sh "aws cloudformation create-stack --stack-name ${params.STACK_NAME} --template-url ${params.TEMPLATE_FILE_PATH} --parameter ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM
+				if [[ $? -eq 0 ]]; then
+				# Wait for create-stack to finish
+				echo  "Waiting for create-stack command to complete"
+				CREATE_STACK_STATUS=$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text)
+				while [[ $CREATE_STACK_STATUS == "REVIEW_IN_PROGRESS" ]] || [[ $CREATE_STACK_STATUS == "CREATE_IN_PROGRESS" ]]
+				do
+				# Wait 30 seconds and then check stack status again
+				sleep 30
+				CREATE_STACK_STATUS=$(aws --region us-east-1 cloudformation describe-stacks --stack-name testjenkins --query 'Stacks[0].StackStatus' --output text)
+				done
+				fi"
           }
         }
       }
