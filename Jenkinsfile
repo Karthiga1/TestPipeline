@@ -90,7 +90,7 @@ pipeline {
             // Check if Stack is existing
             script{
             echo "-1"  
-            
+            sh "aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --output text|grep myteststack"
             echo "0"
             
             }
