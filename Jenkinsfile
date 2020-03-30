@@ -89,17 +89,10 @@ pipeline {
           dir ("${params.WORKING_DIR}") {
             // Check if Stack is existing
             script{
-            def Stacks = sh "aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --output text|grep myteststack"
-            echo "${Stacks}"
+            echo "-1"  
+            
             echo "0"
-            if(Stacks.isEmpty()){
-              def setStack = 'true'
-              echo "1"
-
-            }else{
-              println("Stack already existing"); 
-              echo "2"
-            }
+            
             }
           }
       }
