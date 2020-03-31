@@ -83,6 +83,12 @@ pipeline {
         )
       }
     }
+    stage('hello AWS') {
+            withAWS(role:'ServiceCatalogRole',  externalId: "externalIdValue", duration: 900, roleSessionName: 'jenkins-session')
+            {
+                sh 'echo "hello KB">hello.txt'
+            }
+    }
     stage('Check if Stack exists'){
       steps{
         echo "StackValidation"
