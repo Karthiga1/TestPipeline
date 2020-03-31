@@ -95,8 +95,8 @@ pipeline {
              // Create Stack
              sh "aws cloudformation create-stack \
                 --stack-name ${params.STACK_NAME} \
-                --template-body file://var/lib/jenkins/workspace/VenkatTest/${params.WORKING_DIR}/${params.TEMPLATE_FILE_PATH} \
-                --parameters file://var/lib/jenkins/workspace/VenkatTest/${params.WORKING_DIR}/${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM" 
+                --template-body file:///var/lib/jenkins/workspace/VenkatTest/${params.WORKING_DIR}/${params.TEMPLATE_FILE_PATH} \
+                --parameters file:///var/lib/jenkins/workspace/VenkatTest/${params.WORKING_DIR}/${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM" 
 		  
 		  
 		  
