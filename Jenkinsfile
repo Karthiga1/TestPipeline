@@ -83,7 +83,11 @@ pipeline {
         )
       }
     }
-
+    stage('Check if Stack exists'){
+      steps{
+        echo "StackValidation"
+      }
+    }
     stage('Create Stack') {
       steps {
         withAWS(credentials:"${params.AWS_CREDENTIALS_ID}", region:"${params.REGION}") {
@@ -91,14 +95,19 @@ pipeline {
              // Create Stack
              sh "aws cloudformation create-stack \
                 --stack-name ${params.STACK_NAME} \
-                --template-url ${params.TEMPLATE_FILE_PATH} \
-                ${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM" 
+                --template-body file://var/lib/jenkins/workspace/VenkatTest/${params.WORKING_DIR}/${params.TEMPLATE_FILE_PATH} \
+                --parameters file://var/lib/jenkins/workspace/VenkatTest/${params.WORKING_DIR}/${params.EXTRA_ARGS} --capabilities CAPABILITY_NAMED_IAM" 
 		  
 		  
 		  
           }
         }
       } 
+    }
+    stage('Update Stack'){
+      steps{
+        echo "Update Stack"
+      }
     }
   }
 }
